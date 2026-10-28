@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retirada · Drogaria São Paulo</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B4C70;--red:#E01E26;--teal:#0F9C9A;--sun:#E6ED5C;--ink:#14283A;--display:"Baloo 2",system-ui,sans-serif;--body:"Nunito",system-ui,sans-serif}
+*{box-sizing:border-box}
+html{font-size:clamp(14px,2vmin,30px)}
+body{margin:0;height:100dvh;font-family:var(--body);background:#06263A;color:#fff;display:flex;flex-direction:column;overflow:hidden}
+header{background:var(--navy);padding:.9rem 1.6rem;display:flex;align-items:center;gap:1rem}
+header h1{margin:0;font-family:var(--display);font-size:2rem;flex:1}
+.logo-box{display:flex;align-items:center}
+.logo-box img{display:block;height:3rem;width:auto;max-width:42vw;background:#fff;border-radius:.55rem;padding:.25rem .6rem}
+.logo-box.grande img{height:4.4rem;max-width:80vw;border-radius:.9rem;padding:.5rem 1.1rem}
+.logo-txt{display:none;font-family:var(--display);font-weight:800;font-size:1.2rem;line-height:1}
+.logo-box.grande .logo-txt{font-size:2rem}
+.sem-logo img{display:none}.sem-logo .logo-txt{display:block}
+
+header button{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:99px;padding:.5rem 1.1rem;font:900 1rem var(--body);cursor:pointer}
+header button:focus-visible{outline:3px solid #fff}
+main{flex:1;display:grid;grid-template-columns:1fr 1.25fr;min-height:0}
+.col{padding:1.4rem 1.6rem;display:flex;flex-direction:column;min-height:0}
+.col h2{margin:0 0 1rem;font-family:var(--display);font-size:2.2rem}
+.col.prep{border-right:2px solid #12435F}
+.col.prep h2{color:#FFB74D}
+.col.pronto{background:#0A3B45}
+.col.pronto h2{color:#5FE0C8}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.9rem;align-content:start;overflow:hidden}
+.senha{font-family:var(--display);font-weight:800;font-size:3.6rem;line-height:1;text-align:center;padding:.6rem .4rem;border-radius:1rem;background:#0F3A55;color:#FFB74D}
+.pronto .senha{background:var(--teal);color:#fff;font-size:4rem;padding:.8rem .4rem}
+.senha.novo{animation:pisca .7s ease-in-out 6}
+@keyframes pisca{50%{background:var(--sun);color:var(--ink);transform:scale(1.07)}}
+.vazio{opacity:.55;font-weight:900;font-size:1.3rem}
+footer{padding:.7rem 1.6rem;background:#041B2B;font-weight:700;font-size:.95rem;opacity:.85;text-align:center}
+@media (max-width:700px){main{grid-template-columns:1fr}.col.prep{border-right:0;border-bottom:2px solid #12435F}}
+@media (prefers-reduced-motion:reduce){.senha.novo{animation:none}}
+</style>
+</head>
+<body>
+<header><span class="logo-box"><img src="logo.png" alt="Drogaria São Paulo" onerror="this.parentNode.classList.add('sem-logo')"><span class="logo-txt">Drogaria São Paulo</span></span><h1>Retirada de pedidos</h1><button id="voz">🔈 Ativar aviso por voz</button></header>
+<main>
+  <section class="col prep"><h2>Preparando</h2><div class="grade" id="prep"></div></section>
+  <section class="col pronto"><h2>Pronto para retirar</h2><div class="grade" id="pronto"></div></section>
+</main>
+<footer>Medicamentos são entregues no balcão com orientação do farmacêutico.</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="catalog.js"></script>
+<script src="core.js"></script>
+<script>
+(function(){var f=[];["TOTEM_CONFIG","CATALOGO","Totem"].forEach(function(k){if(!window[k])f.push(k)});
+if(f.length){document.addEventListener("DOMContentLoaded",function(){var d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:999;background:#fff;color:#14283A;padding:24px;font:700 18px/1.4 system-ui,sans-serif;overflow:auto";
+d.innerHTML="<h2 style='margin:0 0 12px'>Arquivos não encontrados</h2><p>Esta página precisa dos arquivos <b>config.js</b>, <b>catalog.js</b> e <b>core.js</b> na mesma pasta dela, no site. Envie esses três arquivos para o mesmo lugar do index.html no GitHub e atualize a página.</p>";document.body.appendChild(d)})}})();
+</script>
+<script>
+(() => {
+const T = window.Totem, $ = s => document.querySelector(s);
+let vozOn = false, conhecidos = null;
+
+$("#voz").onclick = () => {
+  vozOn = !vozOn; $("#voz").textContent = vozOn ? "🔊 Aviso por voz ligado" : "🔈 Ativar aviso por voz";
+  if (vozOn && "speechSynthesis" in window) { const u = new SpeechSynthesisUtterance("Aviso por voz ligado"); u.lang = "pt-BR"; speechSynthesis.speak(u); }
+};
+function anunciar(numero) {
+  if (!vozOn || !("speechSynthesis" in window)) return;
+  const u = new SpeechSynthesisUtterance("Pedido " + String(numero % 1000).split("").join(" ") + " pronto para retirada");
+  u.lang = "pt-BR"; u.rate = .9; speechSynthesis.speak(u);
+}
+async function atualizar() {
+  let lista; try { lista = await T.listarPedidos(); } catch (e) { console.error(e); return; }
+  const prontos = lista.filter(p => p.status === "pronto").sort((a, b) => b.numero - a.numero).slice(0, 12);
+  const prep = lista.filter(p => ["novo", "preparando"].includes(p.status)).sort((a, b) => a.numero - b.numero).slice(0, 20);
+  const novos = conhecidos ? prontos.filter(p => !conhecidos.has(p.id)) : [];
+  conhecidos = new Set(prontos.map(p => p.id));
+  const html = (arr, extra) => arr.length ? arr.map(p => `<div class="senha ${extra && novos.includes(p) ? "novo" : ""}">${T.senha(p.numero)}</div>`).join("") : `<div class="vazio">—</div>`;
+  $("#prep").innerHTML = html(prep, false); $("#pronto").innerHTML = html(prontos, true);
+  novos.forEach(p => anunciar(p.numero));
+}
+atualizar(); T.aoMudar(atualizar); setInterval(atualizar, 5000);
+})();
+</script>
+</body>
+</html>
