@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B4C70">
+<title>Painel da loja · Totem</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B4C70;--navy-d:#073650;--cyan:#4DB8E8;--red:#E01E26;--red-d:#B5121A;--teal:#0F9C9A;--sun:#E6ED5C;--ink:#14283A;--ink-2:#50677A;--line:#C9E3F0;--bg:#D9EFF9;--ok:#0B4C70;--display:"Baloo 2",system-ui,sans-serif;--body:"Nunito",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--body);background:var(--bg);color:var(--ink);font-size:16px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.hide{display:none!important}
+.logo-box{display:flex;align-items:center}
+.logo-box img{display:block;height:38px;width:auto;max-width:50vw;background:#fff;border-radius:9px;padding:4px 10px}
+.logo-box.grande img{height:64px;max-width:80vw;border-radius:.9rem;padding:.5rem 1.1rem}
+.logo-txt{display:none;font-family:var(--display);font-weight:800;font-size:20px;line-height:1}
+.logo-box.grande .logo-txt{font-size:2rem}
+.sem-logo img{display:none}.sem-logo .logo-txt{display:block}
+.lg .logo-box img{background:none;padding:0}.lg .logo-txt{color:var(--navy)}
+
+/* login */
+#login{min-height:100dvh;display:grid;place-items:center;padding:1.2rem;background:var(--navy-d)}
+.lg{background:#fff;border-radius:20px;padding:1.6rem;width:min(380px,100%);display:flex;flex-direction:column;gap:.8rem}
+.lg h1{font-family:var(--display);margin:0;font-size:1.7rem}
+.lg p{margin:0;color:var(--ink-2);font-weight:700}
+.lg label{font-weight:800;font-size:.9rem;display:flex;flex-direction:column;gap:.3rem}
+input,select,textarea{border:2px solid var(--line);border-radius:12px;padding:.7rem .8rem;background:#fff;width:100%}
+.err{color:var(--red);font-weight:800;min-height:1.2em;font-size:.9rem}
+.btn{background:var(--red);color:#fff;font-weight:900;padding:.75rem 1.2rem;border-radius:99px}
+.btn.sec{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+.btn.ok{background:var(--ok)}
+.btn.sm{padding:.45rem .9rem;font-size:.88rem}
+
+/* app */
+header{background:var(--navy);color:#fff;padding:.8rem 1rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-family:var(--display);font-size:1.3rem;flex:1;min-width:10rem}
+header h1 small{display:block;font-family:var(--body);font-size:.75rem;opacity:.85;font-weight:700}
+.stats{display:flex;gap:.5rem;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.16);border-radius:12px;padding:.35rem .8rem;line-height:1.1}
+.stat b{display:block;font-family:var(--display);font-size:1.15rem}
+.stat span{font-size:.72rem;font-weight:700;opacity:.9}
+header .sair{background:rgba(255,255,255,.18);color:#fff;border-radius:99px;padding:.45rem .9rem;font-weight:800}
+nav.abas{display:flex;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}
+nav.abas button{flex:1;background:none;padding:.9rem .4rem;font-weight:900;color:var(--ink-2);border-bottom:4px solid transparent}
+nav.abas button.on{color:var(--red);border-color:var(--red)}
+nav.abas .n{background:var(--red);color:#fff;border-radius:99px;font-size:.72rem;padding:.1rem .45rem;margin-left:.3rem}
+main{padding:1rem;max-width:1400px;margin:0 auto}
+.colunas{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;align-items:start}
+.col h2{font-family:var(--display);font-size:1.2rem;margin:0 0 .6rem;display:flex;align-items:center;gap:.5rem}
+.col h2 span{background:var(--ink);color:#fff;font-size:.8rem;border-radius:99px;padding:.05rem .55rem}
+.col .pilha{display:flex;flex-direction:column;gap:.7rem}
+.ped{background:#fff;border-radius:16px;padding:.9rem;box-shadow:0 2px 10px rgba(60,20,20,.07);border-left:6px solid var(--c,var(--line))}
+.ped .topo{display:flex;align-items:baseline;gap:.6rem}
+.ped .num{font-family:var(--display);font-size:2rem;font-weight:800;line-height:1;color:var(--red)}
+.ped .hora{color:var(--ink-2);font-weight:700;font-size:.85rem;flex:1}
+.ped .tot{font-family:var(--display);font-weight:800;font-size:1.1rem}
+.ped ul{margin:.5rem 0;padding:0;list-style:none;font-weight:700;font-size:.92rem;display:flex;flex-direction:column;gap:.15rem}
+.tag{display:inline-block;font-size:.72rem;font-weight:900;border-radius:99px;padding:.15rem .6rem;background:#E6F6F2;color:#07564B;margin-right:.3rem}
+.tag.farma{background:var(--sun);color:var(--ink)}
+.ped .acoes{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.vazio{color:var(--ink-2);font-weight:700;padding:.8rem;text-align:center;border:2px dashed var(--line);border-radius:14px}
+
+.cham{background:#fff;border-radius:14px;padding:.9rem;display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem;box-shadow:0 2px 10px rgba(60,20,20,.07)}
+.cham .i{font-size:1.8rem}
+.cham .t{flex:1;font-weight:800}
+.cham .t small{display:block;color:var(--ink-2);font-weight:700}
+.cham.feito{opacity:.55}
+
+.barra-prod{display:flex;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap}
+.barra-prod input{flex:1;min-width:10rem}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(60,20,20,.07)}
+th,td{padding:.55rem .6rem;text-align:left;border-bottom:1px solid var(--line);font-weight:700;font-size:.92rem;vertical-align:middle}
+th{background:#FAF7F6;font-size:.78rem;color:var(--ink-2)}
+td input{padding:.4rem .5rem;width:5.5rem;border-radius:8px}
+.thumb{display:grid;place-items:center;width:52px;height:52px;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 2px var(--line);font-size:1.6rem;overflow:hidden;cursor:pointer;position:relative}
+.thumb img{width:100%;height:100%;object-fit:contain}
+.thumb input{position:absolute;inset:0;opacity:0;width:100%;height:100%;padding:0;cursor:pointer}
+.thumb.vazio::after{content:"+ foto";position:absolute;bottom:0;left:0;right:0;font-size:.6rem;font-weight:900;background:var(--navy);color:#fff;text-align:center;padding:1px 0}
+.rmimg{background:none;color:var(--red);font-weight:800;font-size:.72rem;padding:2px 0;display:block;margin:2px auto 0}
+#prev{width:90px;height:90px;border-radius:12px;box-shadow:inset 0 0 0 2px var(--line);display:none;overflow:hidden}
+#prev img{width:100%;height:100%;object-fit:contain}
+td.nome{min-width:9rem}
+.sw{position:relative;width:46px;height:26px;display:inline-block}
+.sw input{opacity:0;width:0;height:0}
+.sw i{position:absolute;inset:0;background:#cfc7c5;border-radius:99px;transition:.15s}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.15s}
+.sw input:checked+i{background:var(--ok)}
+.sw input:checked+i::after{transform:translateX(20px)}
+.tabela-wrap{overflow-x:auto}
+
+dialog{border:0;border-radius:20px;padding:1.3rem;width:min(440px,94vw)}
+dialog::backdrop{background:rgba(36,23,22,.55)}
+dialog h3{font-family:var(--display);margin:0 0 .8rem;font-size:1.4rem}
+.form{display:grid;gap:.7rem}
+.form label{font-weight:800;font-size:.85rem;display:flex;flex-direction:column;gap:.25rem}
+.form .dois{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.form .chk{flex-direction:row;align-items:center;gap:.5rem}
+.form .chk input{width:auto}
+.rod{display:flex;gap:.6rem;justify-content:flex-end;margin-top:.9rem}
+#aviso-modo{background:var(--sun);color:var(--ink);font-weight:800;font-size:.85rem;padding:.4rem 1rem;text-align:center}
+#toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.7rem 1.2rem;border-radius:99px;font-weight:800;z-index:20;opacity:0;transition:.2s;pointer-events:none}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <form class="lg" id="form-login">
+    <span class="logo-box"><img src="logo.png" alt="Drogaria São Paulo" onerror="this.parentNode.classList.add('sem-logo')"><span class="logo-txt">Drogaria São Paulo</span></span>
+    <h1>Painel da loja</h1>
+    <p id="login-dica">Entre para acompanhar os pedidos do totem.</p>
+    <label><span id="lbl-user">E-mail</span><input id="user" autocomplete="username" required></label>
+    <label id="wrap-senha">Senha<input id="senha" type="password" autocomplete="current-password"></label>
+    <div class="err" id="login-erro"></div>
+    <button class="btn" type="submit">Entrar</button>
+  </form>
+</section>
+
+<div id="app" class="hide">
+  <div id="aviso-modo" class="hide">Modo demonstração: os dados ficam só neste navegador. Configure o Supabase em config.js.</div>
+  <header>
+    <span class="logo-box"><img src="logo.png" alt="Drogaria São Paulo" onerror="this.parentNode.classList.add('sem-logo')"><span class="logo-txt">Drogaria São Paulo</span></span>
+    <h1>Painel da loja<small id="sub"></small></h1>
+    <div class="stats">
+      <div class="stat"><b id="st-ped">0</b><span>pedidos hoje</span></div>
+      <div class="stat"><b id="st-fat">R$ 0</b><span>vendas hoje</span></div>
+    </div>
+    <button class="sair" id="sair">Sair</button>
+  </header>
+  <nav class="abas">
+    <button data-aba="pedidos" class="on">Pedidos<span class="n hide" id="n-ped"></span></button>
+    <button data-aba="chamados">Chamados<span class="n hide" id="n-cham"></span></button>
+    <button data-aba="produtos">Produtos</button>
+  </nav>
+  <main>
+    <section id="aba-pedidos"><div class="colunas" id="colunas"></div></section>
+    <section id="aba-chamados" class="hide"><div id="lista-cham"></div></section>
+    <section id="aba-produtos" class="hide">
+      <div class="barra-prod">
+        <input id="busca" placeholder="Buscar produto" type="search">
+        <button class="btn" id="novo-prod">+ Novo produto</button>
+        <button class="btn sec" id="seed">Carregar catálogo de exemplo</button>
+      </div>
+      <div class="tabela-wrap"><table><thead><tr><th></th><th>Produto</th><th>Categoria</th><th>Preço (R$)</th><th>Estoque</th><th>Ativo</th></tr></thead><tbody id="tb"></tbody></table></div>
+    </section>
+  </main>
+</div>
+
+<dialog id="dlg">
+  <form method="dialog" class="form" id="form-prod">
+    <h3>Novo produto</h3>
+    <label>Nome<input name="nome" required maxlength="60"></label>
+    <label>Descrição<input name="descricao" maxlength="90"></label>
+    <label>Foto do produto<input type="file" id="f-img" accept="image/*"></label>
+    <div id="prev"></div>
+    <div class="dois">
+      <label>Categoria<select name="categoria" id="sel-cat"></select></label>
+      <label>Emoji (se não tiver foto)<input name="emoji" value="💊" maxlength="4"></label>
+    </div>
+    <div class="dois">
+      <label>Preço (R$)<input name="preco" type="number" step="0.01" min="0" required></label>
+      <label>Estoque<input name="estoque" type="number" min="0" value="20" required></label>
+    </div>
+    <label class="chk"><input type="checkbox" name="mip"> Medicamento isento de prescrição (exige farmacêutico)</label>
+    <label class="chk"><input type="checkbox" name="destaque"> Mostrar em "Mais pedidos"</label>
+    <div class="rod"><button type="button" class="btn sec" id="cancela-prod">Cancelar</button><button class="btn" type="submit">Salvar produto</button></div>
+  </form>
+</dialog>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="catalog.js"></script>
+<script src="core.js"></script>
+<script>
+(function(){var f=[];["TOTEM_CONFIG","CATALOGO","Totem"].forEach(function(k){if(!window[k])f.push(k)});
+if(f.length){document.addEventListener("DOMContentLoaded",function(){var d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:999;background:#fff;color:#14283A;padding:24px;font:700 18px/1.4 system-ui,sans-serif;overflow:auto";
+d.innerHTML="<h2 style='margin:0 0 12px'>Arquivos não encontrados</h2><p>Esta página precisa dos arquivos <b>config.js</b>, <b>catalog.js</b> e <b>core.js</b> na mesma pasta dela, no site. Envie esses três arquivos para o mesmo lugar do index.html no GitHub e atualize a página.</p>";document.body.appendChild(d)})}})();
+</script>
+<script>
+(() => {
+const T = window.Totem, brl = T.brl, esc = T.esc;
+const $ = s => document.querySelector(s);
+const demo = T.modo === "demo";
+let pedidos = [], chamados = [], produtos = [], aba = "pedidos", ultimoNovos = null, ultimoChamados = null, prodEm = 0;
+
+const ESTADOS = [
+  { id: "novo", nome: "Novos", cor: "#E01E26", proximo: "preparando", rotulo: "Começar a preparar" },
+  { id: "preparando", nome: "Preparando", cor: "#E89A00", proximo: "pronto", rotulo: "Marcar como pronto" },
+  { id: "pronto", nome: "Prontos", cor: "#0F9C9A", proximo: "entregue", rotulo: "Entregar ao cliente" },
+  { id: "entregue", nome: "Entregues", cor: "#B9AFAC", proximo: null }
+];
+const hora = iso => new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 2400); }
+function bip() { try { const a = new (window.AudioContext || window.webkitAudioContext)(); const o = a.createOscillator(), g = a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value = 880; g.gain.setValueAtTime(.2, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .5); o.start(); o.stop(a.currentTime + .5); } catch (e) {} }
+
+/* ---- login ---- */
+if (demo) { $("#lbl-user").firstChild.textContent = "PIN"; $("#user").type = "password"; $("#user").inputMode = "numeric"; $("#wrap-senha").classList.add("hide"); $("#login-dica").textContent = "Modo demonstração: use o PIN definido em config.js (padrão 1234)."; }
+$("#form-login").addEventListener("submit", async e => {
+  e.preventDefault(); $("#login-erro").textContent = "";
+  try { await T.entrarPainel($("#user").value.trim(), $("#senha").value); iniciar(); } catch (err) { $("#login-erro").textContent = err.message; }
+});
+$("#sair").onclick = async () => { await T.sairPainel(); location.reload(); };
+
+/* ---- abas ---- */
+document.querySelectorAll("nav.abas button").forEach(b => b.onclick = () => {
+  aba = b.dataset.aba;
+  document.querySelectorAll("nav.abas button").forEach(x => x.classList.toggle("on", x === b));
+  ["pedidos", "chamados", "produtos"].forEach(a => $("#aba-" + a).classList.toggle("hide", a !== aba));
+});
+
+/* ---- pedidos ---- */
+function renderPedidos() {
+  const abertos = pedidos.filter(p => p.status !== "cancelado");
+  $("#colunas").innerHTML = ESTADOS.map(est => {
+    let lista = abertos.filter(p => p.status === est.id);
+    if (est.id === "entregue") lista = lista.slice(-10);
+    lista = lista.slice().sort((a, b) => est.id === "entregue" ? b.criado_em.localeCompare(a.criado_em) : a.criado_em.localeCompare(b.criado_em));
+    return `<div class="col"><h2>${est.nome}<span>${lista.length}</span></h2><div class="pilha">${lista.length ? lista.map(p => `
+      <article class="ped" style="--c:${est.cor}">
+        <div class="topo"><span class="num">${T.senha(p.numero)}</span><span class="hora">${hora(p.criado_em)}</span><span class="tot">${brl(p.total)}</span></div>
+        <div><span class="tag">${esc(p.pagamento)}</span>${p.precisa_farmaceutico ? `<span class="tag farma">Farmacêutico</span>` : ""}</div>
+        <ul>${(p.itens || []).map(i => `<li>${i.qtd}× ${esc(i.nome)}${i.mip ? " 💊" : ""}</li>`).join("")}</ul>
+        <div class="acoes">${est.proximo ? `<button class="btn sm ok" data-pedido="${esc(p.id)}" data-st="${est.proximo}">${est.rotulo}</button>` : ""}
+          ${["novo", "preparando"].includes(est.id) ? `<button class="btn sm sec" data-pedido="${esc(p.id)}" data-st="cancelado">Cancelar</button>` : ""}</div>
+      </article>`).join("") : `<div class="vazio">Nenhum pedido</div>`}</div></div>`;
+  }).join("");
+  const nNovos = abertos.filter(p => p.status === "novo").length;
+  $("#n-ped").textContent = nNovos; $("#n-ped").classList.toggle("hide", !nNovos);
+  $("#st-ped").textContent = abertos.length;
+  $("#st-fat").textContent = brl(abertos.reduce((s, p) => s + Number(p.total), 0)).replace(",00", "");
+  if (ultimoNovos !== null && nNovos > ultimoNovos) { bip(); toast("Novo pedido recebido"); }
+  ultimoNovos = nNovos;
+}
+$("#colunas").addEventListener("click", async e => {
+  const b = e.target.closest("[data-pedido]"); if (!b) return;
+  if (b.dataset.st === "cancelado" && !confirm("Cancelar este pedido?")) return;
+  b.disabled = true;
+  try { await T.mudarStatusPedido(b.dataset.pedido, b.dataset.st); await atualizar(); } catch (err) { toast(err.message); b.disabled = false; }
+});
+
+/* ---- chamados ---- */
+function renderChamados() {
+  const abertos = chamados.filter(c => c.status === "aberto").length;
+  $("#n-cham").textContent = abertos; $("#n-cham").classList.toggle("hide", !abertos);
+  $("#lista-cham").innerHTML = chamados.length ? chamados.map(c => `<div class="cham ${c.status === "atendido" ? "feito" : ""}"><span class="i">🧑‍⚕️</span>
+    <div class="t">${esc(c.motivo)}<small>${hora(c.criado_em)} · ${c.status === "aberto" ? "aguardando" : "atendido"}</small></div>
+    ${c.status === "aberto" ? `<button class="btn sm ok" data-cham="${esc(c.id)}">Atendido</button>` : ""}</div>`).join("") : `<div class="vazio">Nenhum chamado hoje</div>`;
+  if (ultimoChamados !== null && abertos > ultimoChamados) { bip(); toast("Cliente chamou o farmacêutico"); }
+  ultimoChamados = abertos;
+}
+$("#lista-cham").addEventListener("click", async e => {
+  const b = e.target.closest("[data-cham]"); if (!b) return;
+  try { await T.mudarStatusChamado(b.dataset.cham, "atendido"); await atualizar(); } catch (err) { toast(err.message); }
+});
+
+/* ---- produtos ---- */
+const catNome = id => (window.CATEGORIAS.find(c => c.id === id) || {}).nome || id;
+function renderProdutos() {
+  const q = $("#busca").value.trim().toLowerCase();
+  const lista = produtos.filter(p => !q || p.nome.toLowerCase().includes(q) || catNome(p.categoria).toLowerCase().includes(q));
+  $("#tb").innerHTML = lista.length ? lista.map(p => `<tr data-id="${esc(p.id)}">
+    <td><label class="thumb ${p.imagem ? "" : "vazio"}">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : esc(p.emoji)}<input type="file" accept="image/*" data-img aria-label="Trocar foto"></label>${p.imagem ? `<button class="rmimg" data-rmimg>remover</button>` : ""}</td><td class="nome">${esc(p.nome)}${p.mip ? ' <span class="tag farma">MIP</span>' : ""}</td><td>${esc(catNome(p.categoria))}</td>
+    <td><input type="number" step="0.01" min="0" value="${Number(p.preco).toFixed(2)}" data-campo="preco" aria-label="Preço"></td>
+    <td><input type="number" min="0" value="${p.estoque}" data-campo="estoque" aria-label="Estoque"></td>
+    <td><label class="sw"><input type="checkbox" data-campo="ativo" ${p.ativo ? "checked" : ""}><i></i></label></td></tr>`).join("")
+    : `<tr><td colspan="6"><div class="vazio">Nenhum produto. Use “Carregar catálogo de exemplo” ou crie um novo.</div></td></tr>`;
+}
+$("#busca").oninput = renderProdutos;
+$("#tb").addEventListener("click", async e => {
+  const b = e.target.closest("[data-rmimg]"); if (!b) return;
+  const p = produtos.find(x => x.id === b.closest("tr").dataset.id);
+  try { const { imagem, ...resto } = p; await T.salvarProduto({ ...resto, imagem: null }); p.imagem = null; renderProdutos(); toast("Foto removida"); } catch (err) { toast(err.message); }
+});
+$("#f-img").addEventListener("change", async e => {
+  const f = e.target.files[0], pv = $("#prev"); if (!f) { pv.style.display = "none"; return; }
+  try { const d = await lerImagem(f); pv.innerHTML = `<img src="${d}" alt="">`; pv.style.display = "block"; pv.dataset.d = d; } catch (err) { toast(err.message); }
+});
+function lerImagem(file) {
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onerror = () => rej(new Error("Não foi possível ler a imagem."));
+    fr.onload = () => {
+      const im = new Image();
+      im.onerror = () => rej(new Error("Arquivo de imagem inválido."));
+      im.onload = () => {
+        const k = Math.min(1, 480 / Math.max(im.width, im.height));
+        const c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+        res(c.toDataURL("image/jpeg", 0.82));
+      };
+      im.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+$("#tb").addEventListener("change", async e => {
+  if (e.target.dataset.img !== undefined) {
+    const f = e.target.files[0]; if (!f) return;
+    const p = produtos.find(x => x.id === e.target.closest("tr").dataset.id);
+    try { const imagem = await lerImagem(f); await T.salvarProduto({ ...p, imagem }); p.imagem = imagem; renderProdutos(); toast("Foto salva"); } catch (err) { toast(err.message); }
+    return;
+  }
+  const campo = e.target.dataset.campo; if (!campo) return;
+  const id = e.target.closest("tr").dataset.id, p = produtos.find(x => x.id === id);
+  const valor = campo === "ativo" ? e.target.checked : Number(e.target.value);
+  if (campo !== "ativo" && (isNaN(valor) || valor < 0)) { toast("Valor inválido"); return renderProdutos(); }
+  try { await T.salvarProduto({ ...p, [campo]: valor }); p[campo] = valor; toast("Salvo"); } catch (err) { toast(err.message); }
+});
+$("#seed").onclick = async () => {
+  if (!confirm("Isso recria os produtos de exemplo (substitui os de mesmo código). Continuar?")) return;
+  try { await T.carregarCatalogoDemo(); await atualizar(); toast("Catálogo carregado"); } catch (err) { toast(err.message); }
+};
+$("#sel-cat").innerHTML = window.CATEGORIAS.filter(c => c.id !== "destaques").map(c => `<option value="${c.id}">${c.emoji} ${esc(c.nome)}</option>`).join("");
+$("#novo-prod").onclick = () => { $("#form-prod").reset(); $("#prev").style.display = "none"; delete $("#prev").dataset.d; $("#dlg").showModal(); };
+$("#cancela-prod").onclick = () => $("#dlg").close();
+$("#form-prod").addEventListener("submit", async e => {
+  e.preventDefault(); const f = new FormData(e.target);
+  const nome = f.get("nome").trim();
+  const prod = { id: "p-" + Date.now().toString(36), nome, descricao: f.get("descricao").trim(), categoria: f.get("categoria"), emoji: f.get("emoji") || "💊",
+    preco: Number(f.get("preco")), estoque: parseInt(f.get("estoque"), 10) || 0, mip: !!f.get("mip"), destaque: !!f.get("destaque"), ativo: true };
+  if ($("#prev").dataset.d) prod.imagem = $("#prev").dataset.d;
+  try { await T.salvarProduto(prod); $("#dlg").close(); await atualizar(); toast("Produto criado"); } catch (err) { toast(err.message); }
+});
+
+/* ---- ciclo ---- */
+async function atualizar() {
+  try {
+    const buscarProd = !produtos.length || aba === "produtos" || Date.now() - prodEm > 60000;
+    const [pe, ch, pr] = await Promise.all([T.listarPedidos(), T.listarChamados(), buscarProd ? T.getProdutos() : Promise.resolve(produtos)]);
+    pedidos = pe; chamados = ch;
+    if (buscarProd) { produtos = pr.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")); prodEm = Date.now(); }
+    renderPedidos(); renderChamados();
+    if (!document.activeElement || document.activeElement.tagName !== "INPUT") renderProdutos();
+  } catch (err) { console.error(err); toast("Falha ao atualizar: " + err.message); }
+}
+async function iniciar() {
+  $("#login").classList.add("hide"); $("#app").classList.remove("hide");
+  $("#aviso-modo").classList.toggle("hide", !demo);
+  $("#sub").textContent = T.config.loja + " · " + T.config.unidade;
+  await atualizar(); T.aoMudar(atualizar);
+}
+T.sessaoPainel().then(ok => { if (ok) iniciar(); });
+})();
+</script>
+</body>
+</html>
